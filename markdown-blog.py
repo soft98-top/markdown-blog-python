@@ -365,7 +365,6 @@ def pull_repo():
     repo_url = CONFIG.git["url"]
     repo_branch = CONFIG.git["branch"]
     repo_path = CONFIG.git["path"]
-    username = CONFIG.git["username"]
     pat_token = CONFIG.git["pat"]
     interval = CONFIG.git["interval"]
     if repo_path == None or repo_path == "":
@@ -373,10 +372,9 @@ def pull_repo():
     if repo_url and repo_branch and repo_path:
         if not os.path.exists(repo_path):
             print("Cloning repository...")
-            pull_url = repo_url.replace("github.com", username + ":" + pat_token + "@" + repo_url)
             try:
                 # 使用用户名密码连接
-                repo = git.Repo.clone_from(pull_url, repo_path, branch=repo_branch)
+                repo = git.Repo.clone_from(repo_url, repo_path, branch=repo_branch, env={"GIT_ASKPASS": "echo", "GIT_PASSWORD": pat_token})
                 file_history()
             except Exception as ex:
                 print(f"Cloning repository failed, ex:{ex}")
@@ -389,15 +387,14 @@ def pull_repo():
                 print(f"目录文件夹存在且打开仓库失败, ex:{ex}")
                 return
             # 判断一下是否是当前配置的repo url
-            if repo.remotes.origin.url!= repo_url and repo.remotes.origin.url != pull_url:
+            if repo.remotes.origin.url != repo_url:
                 print(f"Current repository is not {repo_url}, is {repo.remotes.origin.url}")
                 return
             else:
                 try:
                     current = repo.head.commit
                     print("Updating repository...")
-                    repo.remotes.origin.set_url(pull_url)
-                    repo.remotes.origin.pull(repo_branch)
+                    repo.remotes.origin.pull(repo_branch, env={"GIT_ASKPASS": "echo", "GIT_PASSWORD": pat_token})
                     # 判断是否更新内容
                     if current != repo.head.commit:
                         file_history()
@@ -405,7 +402,7 @@ def pull_repo():
                     else:
                         if FILE_HISTORY == {}:
                             file_history()
-                        app.logger.info("Repository is up to date.")
+                        print("Repository is up to date.")
                 except Exception as ex:
                     print(f"仓库更新失败, ex:{ex}")
         thread = threading.Timer(interval, pull_repo)
