@@ -1,0 +1,16 @@
+{% macro parse(navs) %}
+{% for nav in navs %}
+<li class="chapter {% if nav.active %}{{ 'active' }}{% endif %}">
+	<a href="{{ nav.link }}">
+		{{ nav.showname }}
+		{% if nav.isdir %}<i class="exc-trigger fa"></i>{% endif %}
+	</a>
+	{% if nav.children %}
+	<ul class="articles">
+        {% import 'navs.html' as navparse %}
+        {{ navparse.parse(nav.children) | safe }}
+	</ul>
+	{% endif %}
+</li>
+{% endfor %}
+{% endmacro %}

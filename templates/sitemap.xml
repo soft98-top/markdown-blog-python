@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {% for nav in navs %}
+    <url>
+        <loc>{{ url + nav.link }}</loc>
+        <lastmod>{{ nav.last_modified | rfc822_to_iso }}</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1.0</priority>
+    </url>
+    {% endfor %}
+</urlset>

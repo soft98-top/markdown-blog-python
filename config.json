@@ -1,0 +1,45 @@
+{
+    "md_dir": "blog",
+    "title": "My Blog",
+    "url": "http://127.0.0.1:10011",
+    "desc": "Markdown Blog",
+    "cache": 10,
+    "gitalk": {
+        "clientid": null,
+        "clientsecret": null,
+        "repo": null,
+        "owner": null,
+        "admin": null
+    },
+    "analyzer": {
+        "baidu": null,
+        "google": null,
+        "googlead": null
+    },
+    "ignore": {
+        "file": [],
+        "path": []
+    },
+    "file_ext": [
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".bmp",
+        ".ico"
+    ],
+    "default_file": "首页",
+    "proxy": {
+        "googlead": null,
+        "googleay": null,
+        "githubapi": null,
+        "githubcors": null
+    },
+    "git": {
+        "url": null,
+        "branch": "main",
+        "pat": null,
+        "path": null,
+        "interval": 300
+    }
+}

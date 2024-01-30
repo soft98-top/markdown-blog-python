@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ article.title + " - " + config.title }}</title>
+	{% if config.analyzer.googlead %}
+	{% if config.proxy.googlead %}
+	<script async src="https://{{ config.proxy.googlead }}/pagead/js/adsbygoogle.js?client={{ config.analyzer.googlead}}"
+			crossorigin="anonymous"></script>
+	{% else %}
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config.analyzer.googlead}}"
+            crossorigin="anonymous"></script>
+	{% endif %}
+	{% endif %}
+	<link rel="stylesheet" id="theme-css" href="/static/css/github-markdown-css/dark.css">
+	<link rel="stylesheet" href="/static/css/gitbook-theme/style.css">
+	<link rel="stylesheet" href="/static/css/gitbook-theme/website.css">
+	<link rel="stylesheet" href="/static/css/gitbook-theme/chapter-fold.css">
+	<link rel="stylesheet" href="/static/css/gitbook-theme/splitter.css">
+	<link rel="stylesheet" href="/static/css/highlight-theme/a11y-dark.css">
+	<link rel="stylesheet" href="/static/css/main.css">
+
+	{% if config.gitalk.clientid %}
+	<link rel="stylesheet" href="/static/css/gitalk/gitalk.css">
+	{% endif %}
+
+	{% if config.analyzer.baidu %}
+	<!-- Baidu analytics -->
+	<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "https://hm.baidu.com/hm.js?{{ config.analyzer.baidu }}";
+		  var s = document.getElementsByTagName("script")[0];
+		  s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+	{% endif %}
+
+	{% if config.analyzer.google %}
+	<!-- Google tag (gtag.js) -->
+	{% if config.proxy.googleay %}
+	<script async src="https://{{ config.proxy.googleay }}/gtag/js?id={{ config.analyzer.google }}"></script>
+	{% else %}
+	<script async src="https://www.googletagmanager.com/gtag/js?id={{ config.analyzer.google }}"></script>
+	{% endif %}
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', '{{ config.analyzer.google }}');
+	</script>
+	{% endif %}
+
+</head>
+<body>
+	<div class="book font-size-2 font-family-1 color-theme-2">
+		<div class="book-summary">
+			<center>
+				<p class="logo" role="logo"><a href="">{{ config.title }}</a></p>
+			</center>
+			<!-- 在你的Jinja2模板中添加搜索栏 -->
+			<form id="search-form">
+				<input type="text" id="search-box" placeholder="Search navigation..." />
+			</form>
+
+			<!-- 用于显示搜索结果的容器 -->
+			<div id="search-results"></div>
+			<nav role="navigation">
+				<ul class="summary">
+					{% import 'navs.html' as navparse %}
+        			{{ navparse.parse(navs) | safe }}
+					<li class="divider"></li>
+				</ul>
+			</nav>
+		</div>
+		<div class="book-body">
+			<div class="body-inner">
+				{% include "header.html" %}
+				<div class="page-wrapper" tabindex="-1" role="main">
+					<div class="page-inner">
+						{% include 'article.html' %}
+						<div id="gitalk"></div>
+						<a href="#book-header" class="navigation-go-top"><i class="fa fa-arrow-up"></i></a>
+					</div>
+				</div>
+				{% include "footer.html" %}
+			</div>
+		</div>
+	</div>
+</body>
+<script src="/static/js/highlight.min.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/chapter-fold.js"></script>
+<script src="/static/js/splitter.js"></script>
+<script src="/static/js/main.js"></script>
+<script>
+	var navigations = {{ navigations|tojson|safe }};
+	
+	// 搜索框的输入事件监听
+	document.getElementById('search-box').addEventListener('input', function(e) {
+		var searchQuery = e.target.value.toLowerCase();
+		// 显示搜索结果
+		var resultsContainer = document.getElementById('search-results');
+		if (!searchQuery || searchQuery == '') {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+		var filteredNavigations = navigations.filter(function(nav) {
+			return nav.showname.toLowerCase().includes(searchQuery);
+		});
+		resultsContainer.innerHTML = ''; // 清空现有的搜索结果
+		filteredNavigations.forEach(function(nav) {
+			var resultItem = document.createElement('div');
+			resultItem.textContent = " [ HIT ] " + nav.showname;
+			resultItem.onclick = function() {
+				window.location.href = nav.link; // 跳转到选中的导航
+			};
+			resultsContainer.appendChild(resultItem);
+		});
+		if (filteredNavigations.length > 0) {
+            resultsContainer.style.display = 'block';
+        } else {
+            resultsContainer.style.display = 'none';
+        }
+	});
+</script>
+{% if config.gitalk.clientid %}
+<script src="/static/js/gitalk.min.js"></script>
+{% if config.proxy.githubapi %}
+<script src="/static/js/ajaxhook.min.js"></script>
+<script>
+	ah.proxy({
+		onRequest: (config,handler) => {
+			let api = '{{ config.proxy.githubapi}}';
+			let cors = '{{ config.proxy.githubcors}}';
+			if(api != undefined && api != "") {
+				config.url = config.url.replace("api.github.com", api);
+			}
+			if(cors != undefined && cors != "") {
+				config.url = config.url.replace("cors-anywhere.azm.workers.dev", cors);
+			}
+			handler.next(config);
+		}
+	});
+</script>
+{% endif %}
+<script>
+	const gitalk = new Gitalk({
+		clientID: '{{ config.gitalk.clientid}}',
+		clientSecret: '{{ config.gitalk.clientsecret}}',
+		repo: '{{ config.gitalk.repo}}',
+		owner: '{{ config.gitalk.owner}}',
+		admin: ['{{ config.gitalk.owner}}'],
+		id: '{{ config.gitalk.id}}',
+		labels: ['gitalk']
+	})
+
+	gitalk.render('gitalk')
+</script>
+{% endif %}
+
+</html>

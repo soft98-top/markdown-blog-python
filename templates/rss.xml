@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>{{ title }}</title>
+        <link>{{ url }}</link>
+        <description>{{ desc }}</description>
+        <language>cn-zh</language>
+
+        {% for nav in navs %}
+        <item>
+            <title>{{ nav.showname }}</title>
+            <link>{{ url + nav.link }}</link>
+            <description>{{ nav.showname }}</description>
+            <pubDate>{{ nav.created }}</pubDate>
+            <guid>{{ nav.link }}</guid>
+        </item>
+        {% endfor %}
+
+    </channel>
+</rss>
