@@ -111,6 +111,7 @@ def load_config(path):
     else:
         save_config(path)
         print("配置文件不存在，已在本地生成配置文件，请配置后启动。")
+        os._exit(0)
 # 文件修改监控
 def watch_config(path,loop=False):
     global CONFIG_HASH
