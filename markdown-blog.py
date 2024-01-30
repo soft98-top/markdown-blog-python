@@ -373,10 +373,10 @@ def pull_repo():
     if repo_url and repo_branch and repo_path:
         if not os.path.exists(repo_path):
             print("Cloning repository...")
+            pull_url = repo_url.replace("github.com", username + ":" + pat_token + "@" + repo_url)
             try:
                 # 使用用户名密码连接
-                repo_url = repo_url.replace("github.com", username + ":" + pat_token + "@" + repo_url)
-                repo = git.Repo.clone_from(repo_url, repo_path, branch=repo_branch)
+                repo = git.Repo.clone_from(pull_url, repo_path, branch=repo_branch)
                 file_history()
             except Exception as ex:
                 print(f"Cloning repository failed, ex:{ex}")
@@ -389,14 +389,15 @@ def pull_repo():
                 print(f"目录文件夹存在且打开仓库失败, ex:{ex}")
                 return
             # 判断一下是否是当前配置的repo url
-            if repo.remotes.origin.url!= repo_url:
+            if repo.remotes.origin.url!= repo_url and repo.remotes.origin.url != pull_url:
                 print(f"Current repository is not {repo_url}, is {repo.remotes.origin.url}")
                 return
             else:
                 try:
                     current = repo.head.commit
                     print("Updating repository...")
-                    repo.remotes.origin.pull(repo_branch, env={"GIT_PASSWORD": pat_token})
+                    repo.remotes.origin.set_url(pull_url)
+                    repo.remotes.origin.pull(repo_branch)
                     # 判断是否更新内容
                     if current != repo.head.commit:
                         file_history()
