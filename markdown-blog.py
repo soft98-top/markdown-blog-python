@@ -331,7 +331,7 @@ def get_md_html(path):
                 'showname': nav.showname,
                 'link': nav.link
             })
-        CONFIG.git['id'] = hashlib.md5(path.encode('utf-8')).hexdigest()
+        CONFIG.git['id'] = hashlib.md5(path.ltrip("/").encode('utf-8')).hexdigest()
         return flask.render_template('layout.html',config=CONFIG, article=article, navs=navs, navigations=navigations)
     else:
         return error_code(404)
