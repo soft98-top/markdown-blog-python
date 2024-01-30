@@ -38,6 +38,7 @@
     "git": {
         "url": null,
         "branch": "main",
+        "username": null,
         "pat": null,
         "path": null,
         "interval": 300
