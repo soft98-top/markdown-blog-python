@@ -318,6 +318,8 @@ def get_md_html(path):
             html_text = mistune.markdown(md_text, escape=True, renderer=ImgHandleRenderer(base_url), plugins=('strikethrough', 'footnotes', 'table','speedup'))
             # 取文件名为title
             title = os.path.splitext(os.path.basename(file_path))[0]
+            if "@" in title:
+                title = title.split("@")[1]
             article = Article(title=title,html=html_text, cache=CONFIG.cache)
             FILECACHE[file_path] = article
         navs = get_navs()
