@@ -375,7 +375,8 @@ def pull_repo():
             print("Cloning repository...")
             try:
                 # 使用用户名密码连接
-                repo = git.Repo.clone_from(repo_url, repo_path, branch=repo_branch, env={"GIT_USERNAME": username, "GIT_PASSWORD": pat_token})
+                repo_url = repo_url.replace("github.com", username + ":" + pat_token + "@" + repo_url)
+                repo = git.Repo.clone_from(repo_url, repo_path, branch=repo_branch)
                 file_history()
             except Exception as ex:
                 print(f"Cloning repository failed, ex:{ex}")
