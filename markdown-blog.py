@@ -77,6 +77,7 @@ class Config:
         self.git = {
             "url": None,
             "branch": "main",
+            "username": None,
             "pat": None,
             "path": None,
             "interval": 300
@@ -364,6 +365,7 @@ def pull_repo():
     repo_url = CONFIG.git["url"]
     repo_branch = CONFIG.git["branch"]
     repo_path = CONFIG.git["path"]
+    username = CONFIG.git["username"]
     pat_token = CONFIG.git["pat"]
     interval = CONFIG.git["interval"]
     if repo_path == None or repo_path == "":
@@ -372,7 +374,8 @@ def pull_repo():
         if not os.path.exists(repo_path):
             print("Cloning repository...")
             try:
-                git.Repo.clone_from(repo_url, repo_path, branch=repo_branch, env={"GIT_PASSWORD": pat_token})
+                # 使用用户名密码连接
+                repo = git.Repo.clone_from(repo_url, repo_path, branch=repo_branch, env={"GIT_USERNAME": username, "GIT_PASSWORD": pat_token})
                 file_history()
             except Exception as ex:
                 print(f"Cloning repository failed, ex:{ex}")
