@@ -87,6 +87,7 @@ python3 markdown-blog.py
     "git": { // git仓库设置，当使用github仓库同步备份md文件时，用此设置定时拉取文件
         "url": null,
         "branch": "main",
+        "username": null,
         "pat": null,
         "path": null,
         "interval": 300
@@ -98,6 +99,7 @@ python3 markdown-blog.py
 
 - 没有对Windows做兼容，代码中部分直接添加的符号可能会导致在Windows上无法运行
 - 没有详尽的调试信息，可能会出现意外的情况无法处理
+- 程序使用的mistune是v3.0.2版本，对python版本有要求，实测python3.6无法安装，开发使用版本为python3.9.6
 
 ## 鸣谢
 
