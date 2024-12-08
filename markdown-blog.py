@@ -82,6 +82,8 @@ class Config:
             "path": None,
             "interval": 300
         }
+        self.copyright = ""
+        self.icp = ""
 # 全局配置变量
 CONFIG = Config()
 # 文件历史信息，维护文件创建时间和修改时间

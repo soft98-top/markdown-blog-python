@@ -1,6 +1,9 @@
-{% if config.icp %}
+{% if config.icp or config.copyright %}
 <div class="footer">
-    <p>© Copyright {{ config.opyright }} <a class="link" href="https://beian.miit.gov.cn">{{ config.icp }}</a> 
+    <p> 
+        {% if config.copyright %}
+        © Copyright {{ config.copyright }}
+        {% endif %}
         {% if config.icp %}
         <a class="link" href="https://beian.mps.gov.cn">{{ config.icp }}</a>
         {% endif %}
