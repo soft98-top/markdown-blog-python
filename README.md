@@ -91,7 +91,9 @@ python3 markdown-blog.py
         "pat": null,
         "path": null,
         "interval": 300
-    }
+    },
+    "copyright":"", // 版权所属
+    "icp":"" // icp备案号
 }
 ```
 
