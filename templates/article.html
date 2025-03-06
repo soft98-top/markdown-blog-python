@@ -1,3 +1,23 @@
+{% if article.encrypted %}
+<div id="encrypted-content" style="display: none;">
+    {{ article.html }}
+</div>
+<div id="password-form" class="password-form">
+    <div class="lock-icon">
+        <i class="fa fa-lock"></i>
+    </div>
+    <h3>加密文章</h3>
+    <p>这篇文章需要密码才能查看</p>
+    <div class="password-input-group">
+        <input type="password" id="article-password" class="password-input" placeholder="请输入密码" autofocus>
+        <button onclick="decryptArticle()" class="password-button">
+            <i class="fa fa-key"></i> 解锁
+        </button>
+    </div>
+</div>
+<article id="decrypted-content" class="markdown-body" style="display: none;"></article>
+{% else %}
 <article class="markdown-body">
     {{ article.html | safe }}
 </article>
+{% endif %}

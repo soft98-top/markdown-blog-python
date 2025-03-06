@@ -8,10 +8,15 @@ import json
 import hashlib
 import threading
 import git
+import frontmatter
 from collections import defaultdict
 import codecs
 from email.utils import format_datetime, parsedate
 from urllib.parse import urlparse, urljoin
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import base64
 
 # 日期格式转换过滤器
 def format_rfc822_to_iso(value):
@@ -130,9 +135,13 @@ class Article:
     title = ''
     html = ''
     expires = 0
-    def __init__(self, title, html, cache=0):
+    metadata = {}
+    encrypted = False
+    def __init__(self, title, html, metadata={}, encrypted=False, cache=0):
         self.title = title
         self.html = html
+        self.metadata = metadata
+        self.encrypted = encrypted
         if cache > 0:
             self.expires = datetime.datetime.now() + datetime.timedelta(seconds=cache)
 # 单个导航类
@@ -315,15 +324,48 @@ def get_md_html(path):
         if article and article.expires > datetime.datetime.now():
             pass
         else:
-            md_text = open(file_path, 'r').read()
+            # 使用 frontmatter 解析 markdown 文件
+            post = frontmatter.load(file_path)
+            metadata = post.metadata
+            md_text = post.content
+            
             base_url = urljoin(CONFIG.url, os.path.dirname(file_path).lstrip(CONFIG.md_dir)) + '/'
             html_text = mistune.markdown(md_text, escape=True, renderer=ImgHandleRenderer(base_url), plugins=('strikethrough', 'footnotes', 'table','speedup'))
-            # 取文件名为title
+            
+            # 取文件名为默认title，如果metadata中有title则使用metadata中的
             title = os.path.splitext(os.path.basename(file_path))[0]
             if "@" in title:
                 title = title.split("@")[1]
-            article = Article(title=title,html=html_text, cache=CONFIG.cache)
+            if 'title' in metadata:
+                title = metadata['title']
+            
+            # 检查是否需要加密
+            encrypted = False
+            if metadata.get('encrypted', False):
+                # 生成随机的初始化向量（IV）
+                iv = os.urandom(12)  # AES-GCM 使用 12 字节的 IV
+                # 使用密码生成加密密钥
+                password = metadata.get('password', '')
+                kdf = PBKDF2HMAC(
+                    algorithm=hashes.SHA256(),
+                    length=32,
+                    salt=b'fixed_salt_for_blog',  # 使用固定的盐值
+                    iterations=100000,
+                )
+                key = kdf.derive(password.encode())
+                
+                # 使用 AES-GCM 加密
+                aesgcm = AESGCM(key)
+                encrypted_data = aesgcm.encrypt(iv, html_text.encode(), None)
+                
+                # 将 IV 和加密数据组合并进行 base64 编码
+                combined_data = iv + encrypted_data
+                html_text = base64.b64encode(combined_data).decode()
+                encrypted = True
+                
+            article = Article(title=title, html=html_text, metadata=metadata, encrypted=encrypted, cache=CONFIG.cache)
             FILECACHE[file_path] = article
+            
         navs = get_navs()
         navs = handle_nav(navs,'/' + path)
         allnavs = get_all_nav(navs)

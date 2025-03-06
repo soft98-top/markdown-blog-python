@@ -1,3 +1,5 @@
 mistune==v3.0.2
 flask
 gitpython
+python-frontmatter
+cryptography

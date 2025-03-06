@@ -1,0 +1,97 @@
+.password-form {
+    text-align: center;
+    margin: 50px auto;
+    max-width: 400px;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: var(--bg-color, #ffffff);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.password-form .lock-icon {
+    font-size: 48px;
+    color: var(--text-color, #333);
+    margin-bottom: 20px;
+}
+
+.password-form h3 {
+    margin: 0 0 10px;
+    color: var(--text-color, #333);
+    font-size: 24px;
+}
+
+.password-form p {
+    color: var(--text-color-secondary, #666);
+    margin-bottom: 25px;
+}
+
+.password-input-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.password-input {
+    flex: 1;
+    max-width: 200px;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 5px;
+    background-color: var(--input-bg-color, #fff);
+    color: var(--text-color, #333);
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.password-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.password-button:hover {
+    background-color: #45a049;
+}
+
+.password-button i {
+    font-size: 14px;
+}
+
+/* 暗色主题适配 */
+.color-theme-2 .password-form {
+    background-color: var(--bg-color, #1a1a1a);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.color-theme-2 .password-input {
+    background-color: var(--input-bg-color, #2d2d2d);
+    border-color: var(--border-color, #444);
+    color: var(--text-color, #eee);
+}
+
+.color-theme-2 .password-form h3 {
+    color: var(--text-color, #eee);
+}
+
+.color-theme-2 .password-form p {
+    color: var(--text-color-secondary, #bbb);
+}
+
+.color-theme-2 .password-form .lock-icon {
+    color: var(--text-color, #eee);
+} 
