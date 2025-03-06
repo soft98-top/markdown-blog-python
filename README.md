@@ -23,10 +23,12 @@ a simple blog for markdown file
 - 配置热更新
 - 导航栏文章名称搜索
 - md文件渲染时图片链接相对路径转域名路径（方便rss阅读器加载）
+- 支持front matter解析
+- 使用front matter增加标题更改和自定义访问密码
 
 TODO
 
-- 支持加密文件访问
+- 主题样式模板化
 
 ## 使用方法
 
